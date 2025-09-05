@@ -113,7 +113,7 @@
         transform: scale(0, 0);
         opacity: 1;
       }
-      20% {
+     20% {
         transform: scale(25, 25);
         opacity: 1;
       }
@@ -166,8 +166,13 @@
       color: var(--text);
     }
     
-    .termux-btn {
-      background: #8a2be2;
+    .online-payment {
+      background: #4CAF50;
+      color: var(--text);
+    }
+    
+    .bank-payment {
+      background: #2196F3;
       color: var(--text);
     }
     
@@ -314,26 +319,29 @@
       color: white;
     }
     
-    .bot-code {
-      background: #2a2a2a;
-      padding: 15px;
-      border-radius: 8px;
+    .payment-options {
+      display: flex;
+      gap: 10px;
       margin: 15px 0;
-      text-align: left;
-      direction: ltr;
-      font-family: monospace;
-      font-size: 12px;
-      max-height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
     }
     
-    .termux-instruction {
-      background: #2a2a2a;
+    .payment-option {
+      flex: 1;
       padding: 15px;
+      background: #2a2a2a;
       border-radius: 8px;
-      margin: 15px 0;
-      text-align: right;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .payment-option.selected {
+      border-color: var(--accent);
+      background: #333;
+    }
+    
+    .payment-option:hover {
+      background: #333;
     }
   </style>
 </head>
@@ -347,28 +355,6 @@
       <div class="step" id="step2"></div>
       <div class="step" id="step3"></div>
       <div class="step" id="step4"></div>
-    </div>
-    
-    <!-- Direct Activation -->
-    <div class="direct-activation hidden" id="direct-activation">
-      <div class="card">
-        <h2>فعال‌سازی مستقیم ربات</h2>
-        <p>برای فعال‌سازی مستقیم ربات در ترمکس، شماره تلفن خود را وارد کنید:</p>
-        <input type="text" id="direct-phone" placeholder="شماره تلفن (مثال: 09123456789)">
-        <button onclick="sendActivationCode()" class="termux-btn">
-          <i class="fas fa-mobile-alt"></i> دریافت کد فعال‌سازی
-        </button>
-        <div id="activation-code-section" class="hidden">
-          <input type="text" id="activation-code" placeholder="کد فعال‌سازی دریافتی">
-          <button onclick="verifyActivationCode()" class="robika">
-            <i class="fas fa-check-circle"></i> تأیید و فعال‌سازی
-          </button>
-        </div>
-        <div id="direct-activation-result"></div>
-        <button class="back-btn" onclick="goToMain()">
-          <i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی
-        </button>
-      </div>
     </div>
     
     <!-- Check Status -->
@@ -433,9 +419,6 @@
         </button>
         
         <div style="margin-top: 20px;">
-          <button onclick="showDirectActivation()" class="termux-btn">
-            <i class="fas fa-terminal"></i> فعال‌سازی مستقیم (ترمکس)
-          </button>
           <button onclick="showStatusCheck()" class="status-btn">
             <i class="fas fa-search"></i> پیگیری وضعیت پرداخت
           </button>
@@ -459,35 +442,57 @@
       </div>
     </div>
     
-    <!-- Step 3: Payment -->
-    <div class="payment hidden" id="payment">
+    <!-- Step 3: Payment Method -->
+    <div class="payment-method hidden" id="payment-method">
       <div class="card">
-        <h2>پرداخت</h2>
-        <p>لطفا مبلغ <span id="plan-amount" class="success">30,000 تومان</span> را به شماره کارت زیر واریز کنید:</p>
+        <h2>روش پرداخت</h2>
+        <p>لطفا روش پرداخت خود را انتخاب کنید:</p>
         
-        <div class="card-info">
-          <i class="far fa-credit-card"></i> 5022-2915-8551-0686
-          <button onclick="copyCardNumber()" style="margin: 10px auto; padding: 8px; font-size: 12px; width: auto;">
-            <i class="far fa-copy"></i> کپی شماره کارت
+        <div class="payment-options">
+          <div class="payment-option" onclick="selectPaymentMethod('online')">
+            <i class="fas fa-credit-card" style="font-size: 24px; margin-bottom: 10px;"></i>
+            <p>پرداخت آنلاین</p>
+          </div>
+          <div class="payment-option" onclick="selectPaymentMethod('bank')">
+            <i class="fas fa-university" style="font-size: 24px; margin-bottom: 10px;"></i>
+            <p>پرداخت کارتی</p>
+          </div>
+        </div>
+        
+        <div id="payment-online" class="hidden">
+          <p>برای پرداخت آنلاین روی دکمه زیر کلیک کنید:</p>
+          <button onclick="processOnlinePayment()" class="online-payment">
+            <i class="fas fa-credit-card"></i> پرداخت آنلاین
           </button>
         </div>
         
-        <p>بعد از پرداخت، اطلاعات زیر را تکمیل کنید:</p>
-        <input type="text" id="phone" placeholder="شماره تلفن شما">
-        <input type="text" id="name" placeholder="نام کامل">
-        
-        <div class="file-upload">
-          <p>آپلود فیش واریزی:</p>
-          <input type="file" id="receipt" accept="image/*">
+        <div id="payment-bank" class="hidden">
+          <p>لطفا مبلغ <span id="bank-amount" class="success">30,000 تومان</span> را به شماره کارت زیر واریز کنید:</p>
+          
+          <div class="card-info">
+            <i class="far fa-credit-card"></i> 5022-2915-8551-0686
+            <button onclick="copyCardNumber()" style="margin: 10px auto; padding: 8px; font-size: 12px; width: auto;">
+              <i class="far fa-copy"></i> کپی شماره کارت
+            </button>
+          </div>
+          
+          <p>بعد از پرداخت، اطلاعات زیر را تکمیل کنید:</p>
+          <input type="text" id="phone" placeholder="شماره تلفن شما">
+          <input type="text" id="name" placeholder="نام کامل">
+          
+          <div class="file-upload">
+            <p>آپلود فیش واریزی:</p>
+            <input type="file" id="receipt" accept="image/*">
+          </div>
+          
+          <button onclick="submitBankPayment()" class="bank-payment">
+            <i class="fas fa-check-circle"></i> ثبت اطلاعات و آپلود
+          </button>
         </div>
         
-        <button onclick="submitPayment()" class="robika">
-          <i class="fas fa-check-circle"></i> ثبت اطلاعات و آپلود
-        </button>
+        <p id="payment-result"></p>
         
-        <p id="result"></p>
-        
-        <button class="back-btn" onclick="goBack('payment', 'plans')">
+        <button class="back-btn" onclick="goBack('payment-method', 'plans')">
           <i class="fas fa-arrow-right"></i> بازگشت
         </button>
       </div>
@@ -497,62 +502,22 @@
     <div class="verification hidden" id="verification">
       <div class="card">
         <h2>تأیید نهایی</h2>
-        <p id="verification-message">اطلاعات شما با موفقیت ثبت شد. پس از تأیید پرداخت، ربات برای شما فعال خواهد شد.</p>
+        <p id="verification-message">پرداخت شما با موفقیت ثبت شد.</p>
         
         <div class="success">
           <p>✅ شماره تلفن: <span id="user-phone">09123456789</span></p>
           <p>✅ نام: <span id="user-name">نام کاربر</span></p>
           <p>✅ ربات: <span id="user-bot">ربات انتخابی</span></p>
           <p>✅ مبلغ: <span id="user-amount">30,000 تومان</span></p>
+          <p>✅ روش پرداخت: <span id="user-method">آنلاین</span></p>
         </div>
         
-        <p>برای پیگیری وضعیت پرداخت با پشتیبانی تماس بگیرید یا از بخش <strong>پیگیری وضعیت</strong> استفاده کنید.</p>
+        <div class="warning">
+          <p>📞 لطفا برای دریافت ربات و راهنمایی نصب با ادمین تماس بگیرید:</p>
+          <p>تلگرام: <b>@TahaDangerm</b></p>
+          <p>روبیکا: <b>@GodtahaA</b></p>
+        </div>
         
-        <button class="back-btn" onclick="goToMain()">
-          <i class="fas fa-home"></i> بازگشت به صفحه اصلی
-        </button>
-      </div>
-    </div>
-    
-    <!-- Activation Page -->
-    <div class="activation hidden" id="activation">
-      <div class="card">
-        <h2>فعال‌سازی ربات</h2>
-        <div id="activation-info">
-          <!-- Activation info will be here -->
-        </div>
-        <div id="bot-code-container">
-          <h3>کد ربات:</h3>
-          <div class="bot-code" id="bot-code">
-            <!-- Bot code will be here -->
-          </div>
-          <button onclick="copyBotCode()" class="robika">
-            <i class="fas fa-copy"></i> کپی کد ربات
-          </button>
-          
-          <div class="termux-instruction">
-            <h3>📱 راهنمای نصب در ترمکس:</h3>
-            <p>1. نصب پیش‌نیازها:</p>
-            <div class="bot-code">
-pkg update && pkg upgrade
-pkg install python python-pip git
-            </div>
-            
-            <p>2. ایجاد فایل ربات:</p>
-            <div class="bot-code">
-mkdir MyBot && cd MyBot
-nano bot.py
-            </div>
-            
-            <p>3. کد بالا را در فایل کپی کرده و ذخیره کنید (Ctrl+X, Y, Enter)</p>
-            
-            <p>4. نصب کتابخانه‌ها و اجرا:</p>
-            <div class="bot-code">
-pip install rubpy
-python bot.py
-            </div>
-          </div>
-        </div>
         <button class="back-btn" onclick="goToMain()">
           <i class="fas fa-home"></i> بازگشت به صفحه اصلی
         </button>
@@ -583,7 +548,6 @@ python bot.py
   <script>
     // داده‌های ذخیره‌سازی محلی
     let payments = JSON.parse(localStorage.getItem('payments')) || [];
-    let activations = JSON.parse(localStorage.getItem('activations')) || [];
     let adminPhone = "09134145617"; // شماره ادمین ثابت
     
     let selectedBot = "";
@@ -591,134 +555,7 @@ python bot.py
     let selectedPrice = 0;
     let userPhone = "";
     let userName = "";
-    let activationCode = "";
-    
-    // کدهای ربات‌ها
-    const botCodes = {
-      'robika': `# -*- coding: utf-8 -*-
-from rubpy import Client
-import asyncio
-import sqlite3
-import time
-
-class RubikaGroupManager:
-    def __init__(self):
-        self.client = Client()
-        self.db_path = "rubika_bot.db"
-        
-    async def start_bot(self):
-        print("🤖 در حال راه‌اندازی ربات مدیریت گروه روبیکا...")
-        await self.client.start()
-        
-        @self.client.on_message()
-        async def handler(message):
-            if message.raw_text and message.raw_text.startswith("/"):
-                await self.process_command(message)
-        
-        print("✅ ربات با موفقیت راه‌اندازی شد!")
-        await self.client.run_until_disconnected()
-    
-    async def process_command(self, message):
-        text = message.raw_text
-        chat_id = message.chat_id
-        
-        if text == "/start":
-            await self.client.send_message(chat_id, "سلام! من ربات مدیریت گروه روبیکا هستم.")
-        elif text == "/help":
-            await self.client.send_message(chat_id, "🤖 راهنمای دستورات:\\n/start - شروع کار با ربات\\n/help - نمایش راهنما")
-
-# اجرای ربات
-if __name__ == "__main__":
-    bot = RubikaGroupManager()
-    asyncio.run(bot.start_bot())`,
-      
-      'telegram': `from telethon import TelegramClient, events
-import asyncio
-
-api_id = 1234567
-api_hash = 'your_api_hash_here'
-
-class TelegramBot:
-    def __init__(self):
-        self.client = TelegramClient('session', api_id, api_hash)
-        
-    async def start(self):
-        await self.client.start()
-        print("ربات تلگرام فعال شد!")
-        
-        @self.client.on(events.NewMessage(pattern='/start'))
-        async def handler(event):
-            await event.reply("سلام! من ربات مدیریت گروه تلگرام هستم.")
-            
-        await self.client.run_until_disconnected()
-
-bot = TelegramBot()
-asyncio.run(bot.start())`,
-      
-      'war': `import random
-import time
-
-class WarBot:
-    def __init__(self):
-        self.players = {}
-        self.battles = []
-        
-    def add_player(self, user_id, name):
-        self.players[user_id] = {
-            'name': name,
-            'level': 1,
-            'score': 0,
-            'health': 100
-        }
-        return f"玩家 {name} 已加入游戏！"
-        
-    def attack(self, attacker_id, defender_id):
-        if attacker_id not in self.players or defender_id not in self.players:
-            return "玩家不存在！"
-            
-        damage = random.randint(5, 25)
-        self.players[defender_id]['health'] -= damage
-        
-        if self.players[defender_id]['health'] <= 0:
-            self.players[attacker_id]['score'] += 10
-            return f"攻击成功！造成 {damage} 点伤害，玩家 {self.players[defender_id]['name']} 被击败！"
-        
-        return f"攻击成功！造成 {damage} 点伤害"
-
-# ایجاد نمونه ربات
-war_bot = WarBot()
-print("ربات جنگ جهانی فعال شد!")`,
-      
-      'ai': `import requests
-import json
-
-class AIBot:
-    def __init__(self):
-        self.api_key = "YOUR_OPENAI_API_KEY"
-        self.api_url = "https://api.openai.com/v1/chat/completions"
-        
-    def ask_question(self, question):
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        
-        data = {
-            "model": "gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": question}],
-            "max_tokens": 150
-        }
-        
-        try:
-            response = requests.post(self.api_url, headers=headers, json=data)
-            return response.json()['choices'][0]['message']['content']
-        except:
-            return "抱歉，我现在无法回答这个问题。"
-
-# ایجاد نمونه ربات
-ai_bot = AIBot()
-print("ربات هوش مصنوعی فعال شد!")`
-    };
+    let paymentMethod = "";
     
     // Update step indicator
     function updateStepIndicator(step) {
@@ -740,77 +577,11 @@ print("ربات هوش مصنوعی فعال شد!")`
     
     // Hide all sections
     function hideAllSections() {
-      const sections = ['options', 'plans', 'payment', 'verification', 'admin-login', 
-                       'admin-panel', 'status-check', 'activation', 'direct-activation'];
+      const sections = ['options', 'plans', 'payment-method', 'verification', 'admin-login', 
+                       'admin-panel', 'status-check'];
       sections.forEach(section => {
         document.getElementById(section).classList.add('hidden');
       });
-    }
-    
-    // Show direct activation
-    function showDirectActivation() {
-      hideAllSections();
-      document.getElementById('direct-activation').classList.remove('hidden');
-    }
-    
-    // Send activation code
-    function sendActivationCode() {
-      const phone = document.getElementById('direct-phone').value;
-      const resultDiv = document.getElementById('direct-activation-result');
-      
-      if (!phone) {
-        resultDiv.innerHTML = '<p class="error">لطفا شماره تلفن خود را وارد کنید.</p>';
-        return;
-      }
-      
-      if (!isValidPhone(phone)) {
-        resultDiv.innerHTML = '<p class="error">شماره تلفن معتبر نیست.</p>';
-        return;
-      }
-      
-      // Generate random activation code
-      activationCode = Math.floor(100000 + Math.random() * 900000).toString();
-      
-      // Simulate sending SMS (in real app, this would call an SMS API)
-      resultDiv.innerHTML = `<p class="success">کد فعال‌سازی به شماره ${phone} ارسال شد.</p>
-                            <p class="warning">کد آزمایشی: ${activationCode} (در نسخه واقعی، این کد از طریق پیامک ارسال می‌شود)</p>`;
-      
-      document.getElementById('activation-code-section').classList.remove('hidden');
-      
-      // Save activation attempt
-      activations.push({
-        phone: phone,
-        code: activationCode,
-        timestamp: new Date().toISOString(),
-        verified: false
-      });
-      
-      localStorage.setItem('activations', JSON.stringify(activations));
-    }
-    
-    // Verify activation code
-    function verifyActivationCode() {
-      const code = document.getElementById('activation-code').value;
-      const phone = document.getElementById('direct-phone').value;
-      const resultDiv = document.getElementById('direct-activation-result');
-      
-      if (!code) {
-        resultDiv.innerHTML = '<p class="error">لطفا کد فعال‌سازی را وارد کنید.</p>';
-        return;
-      }
-      
-      if (code === activationCode) {
-        resultDiv.innerHTML = '<p class="success">✅ شماره تلفن با موفقیت تأیید شد.</p>';
-        
-        // Show bot selection for activation
-        setTimeout(() => {
-          hideAllSections();
-          document.getElementById('options').classList.remove('hidden');
-          document.getElementById('direct-phone').value = phone;
-        }, 2000);
-      } else {
-        resultDiv.innerHTML = '<p class="error">❌ کد فعال‌سازی نادرست است.</p>';
-      }
     }
     
     // Show status check
@@ -856,48 +627,16 @@ print("ربات هوش مصنوعی فعال شد!")`
           <p><strong>ربات:</strong> ${lastPayment.bot}</p>
           <p><strong>پلن:</strong> ${lastPayment.plan}</p>
           <p><strong>مبلغ:</strong> ${lastPayment.amount.toLocaleString()} تومان</p>
+          <p><strong>روش پرداخت:</strong> ${lastPayment.method}</p>
           <p><strong>زمان:</strong> ${new Date(lastPayment.timestamp).toLocaleString('fa-IR')}</p>
           <p><strong>وضعیت:</strong> <span class="status-badge ${statusClass}">${statusText}</span></p>
-          ${lastPayment.status === 'approved' ? 
-            `<button onclick="activateBot('${lastPayment.botType}', '${phone}')" class="robika">
-               <i class="fas fa-play"></i> فعال‌سازی ربات
-             </button>` : ''}
+        </div>
+        <div class="warning">
+          <p>📞 لطفا برای دریافت ربات با ادمین تماس بگیرید:</p>
+          <p>تلگرام: <b>@TahaDangerm</b></p>
+          <p>روبیکا: <b>@GodtahaA</b></p>
         </div>
       `;
-    }
-    
-    // Activate bot
-    function activateBot(botType, phone) {
-      const userPayments = payments.filter(p => p.phone === phone && p.status === 'approved');
-      
-      if (userPayments.length === 0) {
-        alert('پرداخت تایید شده‌ای برای این شماره یافت نشد!');
-        return;
-      }
-      
-      const payment = userPayments[userPayments.length - 1];
-      
-      hideAllSections();
-      document.getElementById('activation').classList.remove('hidden');
-      
-      document.getElementById('activation-info').innerHTML = `
-        <div class="success">
-          <p>✅ ربات: ${payment.bot}</p>
-          <p>✅ پلن: ${payment.plan}</p>
-          <p>✅ مبلغ: ${payment.amount.toLocaleString()} تومان</p>
-          <p>✅ وضعیت: فعال شده</p>
-        </div>
-      `;
-      
-      document.getElementById('bot-code').textContent = botCodes[botType];
-    }
-    
-    // Copy bot code
-    function copyBotCode() {
-      const code = document.getElementById('bot-code').textContent;
-      navigator.clipboard.writeText(code).then(() => {
-        alert('کد ربات با موفقیت کپی شد!');
-      });
     }
     
     // Show admin login
@@ -946,6 +685,7 @@ print("ربات هوش مصنوعی فعال شد!")`
           <p><strong>ربات:</strong> ${payment.bot}</p>
           <p><strong>پلن:</strong> ${payment.plan}</p>
           <p><strong>مبلغ:</strong> ${payment.amount.toLocaleString()} تومان</p>
+          <p><strong>روش پرداخت:</strong> ${payment.method}</p>
           <p><strong>زمان:</strong> ${new Date(payment.timestamp).toLocaleString('fa-IR')}</p>
           <button onclick="approvePayment(${index})" class="admin-btn" style="width: auto; margin: 5px;">
             <i class="fas fa-check"></i> تایید
@@ -999,4 +739,207 @@ print("ربات هوش مصنوعی فعال شد!")`
       if (bot === 'robika' || bot === 'telegram') {
         // برای روبیکا و تلگرام پلن ماهانه
         planOptions.innerHTML = `
-          <button class="plan"
+          <button class="plan" onclick="selectPlan('یک ماهه', 30000)">
+            <span><i class="fas fa-calendar-week"></i> یک ماهه</span>
+            <span class="price-tag">30,000 تومان</span>
+          </button>
+          <button class="plan" onclick="selectPlan('سه ماهه', 60000)">
+            <span><i class="fas fa-calendar-alt"></i> سه ماهه</span>
+            <span class="price-tag">60,000 تومان</span>
+          </button>
+          <button class="plan" onclick="selectPlan('نامحدود', 120000)">
+            <span><i class="fas fa-infinity"></i> نامحدود</span>
+            <span class="price-tag">120,000 تومان</span>
+          </button>
+        `;
+      } else if (bot === 'war') {
+        // برای ربات جنگ جهانی فقط یک گزینه
+        planOptions.innerHTML = `
+          <button class="plan" onclick="selectPlan('یکبار خرید', 50000)">
+            <span><i class="fas fa-shopping-cart"></i> خرید ربات جنگ جهانی</span>
+            <span class="price-tag">50,000 تومان</span>
+          </button>
+        `;
+      } else if (bot === 'ai') {
+        // برای ربات هوش مصنوعی فقط یک گزینه
+        planOptions.innerHTML = `
+          <button class="plan" onclick="selectPlan('یکبار خرید', 100000)">
+            <span><i class="fas fa-shopping-cart"></i> خرید ربات هوش مصنوعی</span>
+            <span class="price-tag">100,000 تومان</span>
+          </button>
+        `;
+      }
+      
+      updateStepIndicator(2);
+    }
+    
+    // Select plan
+    function selectPlan(plan, price) {
+      selectedPlan = plan;
+      selectedPrice = price;
+      
+      hideAllSections();
+      document.getElementById('payment-method').classList.remove('hidden');
+      
+      // Update amount in payment section
+      document.getElementById('bank-amount').textContent = selectedPrice.toLocaleString() + ' تومان';
+      
+      updateStepIndicator(3);
+    }
+    
+    // Select payment method
+    function selectPaymentMethod(method) {
+      paymentMethod = method;
+      
+      // Remove selected class from all options
+      document.querySelectorAll('.payment-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked option
+      event.currentTarget.classList.add('selected');
+      
+      // Show appropriate payment form
+      document.getElementById('payment-online').classList.add('hidden');
+      document.getElementById('payment-bank').classList.add('hidden');
+      
+      if (method === 'online') {
+        document.getElementById('payment-online').classList.remove('hidden');
+      } else if (method === 'bank') {
+        document.getElementById('payment-bank').classList.remove('hidden');
+      }
+    }
+    
+    // Process online payment
+    function processOnlinePayment() {
+      // در نسخه واقعی، اینجا کاربر به درگاه پرداخت هدایت می‌شود
+      // برای نمونه، ما مستقیماً به مرحله بعد می‌رویم
+      
+      hideAllSections();
+      document.getElementById('verification').classList.remove('hidden');
+      
+      // ذخیره اطلاعات پرداخت
+      const paymentData = {
+        name: "پرداخت آنلاین",
+        phone: userPhone,
+        bot: getBotName(selectedBot),
+        botType: selectedBot,
+        plan: selectedPlan,
+        amount: selectedPrice,
+        method: "آنلاین",
+        timestamp: new Date().toISOString(),
+        status: 'approved' // پرداخت آنلاین مستقیم تایید می‌شود
+      };
+      
+      payments.push(paymentData);
+      localStorage.setItem('payments', JSON.stringify(payments));
+      
+      // نمایش اطلاعات کاربر
+      document.getElementById('user-phone').textContent = userPhone;
+      document.getElementById('user-name').textContent = "پرداخت کننده";
+      document.getElementById('user-bot').textContent = getBotName(selectedBot);
+      document.getElementById('user-amount').textContent = selectedPrice.toLocaleString() + ' تومان';
+      document.getElementById('user-method').textContent = "آنلاین";
+      
+      updateStepIndicator(4);
+    }
+    
+    // Submit bank payment
+    function submitBankPayment() {
+      const phone = document.getElementById('phone').value;
+      const name = document.getElementById('name').value;
+      const receipt = document.getElementById('receipt').files[0];
+      const result = document.getElementById('payment-result');
+      
+      if (!phone || !name) {
+        result.innerHTML = "<span class='error'>❌ لطفا تمام اطلاعات را وارد کنید.</span>";
+        return;
+      }
+      
+      if (!isValidPhone(phone)) {
+        result.innerHTML = "<span class='error'>❌ شماره وارد شده معتبر نیست.</span>";
+        return;
+      }
+      
+      if (!receipt) {
+        result.innerHTML = "<span class='error'>❌ لطفا فیش واریزی را آپلود کنید.</span>";
+        return;
+      }
+      
+      userPhone = phone;
+      userName = name;
+      
+      // ذخیره اطلاعات پرداخت
+      const paymentData = {
+        name: name,
+        phone: phone,
+        bot: getBotName(selectedBot),
+        botType: selectedBot,
+        plan: selectedPlan,
+        amount: selectedPrice,
+        method: "کارتی",
+        timestamp: new Date().toISOString(),
+        status: 'pending'
+      };
+      
+      payments.push(paymentData);
+      localStorage.setItem('payments', JSON.stringify(payments));
+      
+      hideAllSections();
+      document.getElementById('verification').classList.remove('hidden');
+      
+      // نمایش اطلاعات کاربر
+      document.getElementById('user-phone').textContent = userPhone;
+      document.getElementById('user-name').textContent = userName;
+      document.getElementById('user-bot').textContent = getBotName(selectedBot);
+      document.getElementById('user-amount').textContent = selectedPrice.toLocaleString() + ' تومان';
+      document.getElementById('user-method').textContent = "کارتی";
+      document.getElementById('verification-message').textContent = "اطلاعات شما با موفقیت ثبت شد. پس از تأیید پرداخت، با شما تماس گرفته خواهد شد.";
+      
+      updateStepIndicator(4);
+    }
+    
+    // Go back to previous step
+    function goBack(currentStep, previousStep) {
+      document.getElementById(currentStep).classList.add('hidden');
+      document.getElementById(previousStep).classList.remove('hidden');
+      
+      if (previousStep === 'options') {
+        updateStepIndicator(1);
+      } else if (previousStep === 'plans') {
+        updateStepIndicator(2);
+      } else if (previousStep === 'payment-method') {
+        updateStepIndicator(3);
+      }
+    }
+    
+    // Validate phone number
+    function isValidPhone(phone) {
+      const regex = /^09[0-9]{9}$/;
+      return regex.test(phone);
+    }
+    
+    // Copy card number to clipboard
+    function copyCardNumber() {
+      const cardNumber = "5022291585510686";
+      navigator.clipboard.writeText(cardNumber).then(() => {
+        alert("شماره کارت کپی شد!");
+      });
+    }
+    
+    // Get bot name in Persian
+    function getBotName(botType) {
+      switch(botType) {
+        case 'robika': return 'مدیریت گروه روبیکا';
+        case 'telegram': return 'مدیریت گروه تلگرام';
+        case 'war': return 'جنگ جهانی';
+        case 'ai': return 'هوش مصنوعی';
+        default: return botType;
+      }
+    }
+  </script>
+
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
