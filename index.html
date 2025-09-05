@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دارک بات | فروشگاه ربات</title>
+  <style>
+    :root {
+      --primary-bg: #0d0d0d;
+      --card-bg: #1a1a1a;
+      --accent: #ff5722;
+      --accent-blue: #2196f3;
+      --accent-green: #4CAF50;
+      --accent-purple: #9C27B0;
+      --accent-gold: #FFD700;
+      --text: #fff;
+      --text-secondary: #ccc;
+      --success: #4CAF50;
+      --error: #f44336;
+      --warning: #ff9800;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Tahoma, sans-serif;
+      background: var(--primary-bg);
+      color: var(--text);
+      text-align: center;
+      line-height: 1.6;
+      padding: 0;
+    }
+    
+    header {
+      background: linear-gradient(to right, #ff5722, #ff8a65);
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+    }
+    
+    .container {
+      max-width: 450px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    h2, h3 {
+      margin-bottom: 15px;
+      color: var(--accent);
+    }
+    
+    p {
+      margin-bottom: 15px;
+      color: var(--text-secondary);
+    }
+    
+    button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin: 12px 0;
+      padding: 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: Tahoma, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    button:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 1;
+      }
+      20% {
+        transform: scale(25, 25);
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(40, 40);
+      }
+    }
+    
+    .robika {
+      background: var(--accent);
+      color: var(--text);
+    }
+    
+    .telegram {
+      background: var(--accent-blue);
+      color: var(--text);
+    }
+    
+    .war {
+      background: var(--accent-purple);
+      color: var(--text);
+    }
+    
+    .ai {
+      background: var(--accent-gold);
+      color: #333;
+      font-weight: bold;
+    }
+    
+    .plan {
+      background: #333;
+      color: var(--text);
+    }
+    
+    .back-btn {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--text-secondary);
+      margin-top: 20px;
+    }
+    
+    .admin-btn {
+      background: var(--accent-green);
+      color: var(--text);
+    }
+    
+    .status-btn {
+      background: var(--accent-blue);
+      color: var(--text);
+    }
+    
+    .termux-btn {
+      background: #8a2be2;
+      color: var(--text);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #222;
+      color: var(--text);
+      font-family: Tahoma, sans-serif;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .card-info {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      direction: ltr;
+      font-family: monospace;
+      font-size: 16px;
+    }
+    
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    .step {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #444;
+      margin: 0 5px;
+    }
+    
+    .step.active {
+      background: var(--accent);
+      transform: scale(1.2);
+    }
+    
+    .success {
+      color: var(--success);
+      font-weight: bold;
+    }
+    
+    .error {
+      color: var(--error);
+      font-weight: bold;
+    }
+    
+    .warning {
+      color: var(--warning);
+      font-weight: bold;
+    }
+    
+    .support-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    
+    .support-icons a {
+      color: var(--text);
+      font-size: 24px;
+      transition: color 0.3s ease;
+    }
+    
+    .support-icons a:hover {
+      color: var(--accent);
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .price-tag {
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 3px 8px;
+      border-radius: 15px;
+    }
+    
+    .file-upload {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      border: 2px dashed #444;
+    }
+    
+    .admin-panel {
+      background: #1e3a5f;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    
+    .payment-item {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: right;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 15px;
+      font-size: 12px;
+      margin: 5px 0;
+    }
+    
+    .status-pending {
+      background: var(--warning);
+      color: #333;
+    }
+    
+    .status-approved {
+      background: var(--success);
+      color: white;
+    }
+    
+    .status-rejected {
+      background: var(--error);
+      color: white;
+    }
+    
+    .bot-code {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      text-align: left;
+      direction: ltr;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    
+    .termux-instruction {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <header>🔥 دارک بات 🔥</header>
+  
+  <div class="container">
+    <!-- Step indicator -->
+    <div class="step-indicator">
+      <div class="step active" id="step1"></div>
+      <div class="step" id="step2"></div>
+      <div class="step" id="step3"></div>
+      <div class="step" id="step4"></div>
+    </div>
+    
+    <!-- Direct Activation -->
+    <div class="direct-activation hidden" id="direct-activation">
+      <div class="card">
+        <h2>فعال‌سازی مستقیم ربات</h2>
+        <p>برای فعال‌سازی مستقیم ربات در ترمکس، شماره تلفن خود را وارد کنید:</p>
+        <input type="text" id="direct-phone" placeholder="شماره تلفن (مثال: 09123456789)">
+        <button onclick="sendActivationCode()" class="termux-btn">
+          <i class="fas fa-mobile-alt"></i> دریافت کد فعال‌سازی
+        </button>
+        <div id="activation-code-section" class="hidden">
+          <input type="text" id="activation-code" placeholder="کد فعال‌سازی دریافتی">
+          <button onclick="verifyActivationCode()" class="robika">
+            <i class="fas fa-check-circle"></i> تأیید و فعال‌سازی
+          </button>
+        </div>
+        <div id="direct-activation-result"></div>
+        <button class="back-btn" onclick="goToMain()">
+          <i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی
+        </button>
+      </div>
+    </div>
+    
+    <!-- Check Status -->
+    <div class="status-check hidden" id="status-check">
+      <div class="card">
+        <h2>پیگیری وضعیت پرداخت</h2>
+        <input type="text" id="status-phone" placeholder="شماره تلفن خود را وارد کنید">
+        <button onclick="checkStatus()" class="status-btn">
+          <i class="fas fa-search"></i> بررسی وضعیت
+        </button>
+        <div id="status-result"></div>
+        <button class="back-btn" onclick="goToMain()">
+          <i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی
+        </button>
+      </div>
+    </div>
+    
+    <!-- Admin Login -->
+    <div class="admin-login hidden" id="admin-login">
+      <div class="card">
+        <h2>ورود ادمین</h2>
+        <input type="text" id="admin-phone" placeholder="شماره تلفن ادمین">
+        <button onclick="adminLogin()" class="admin-btn">
+          <i class="fas fa-lock"></i> ورود به پنل مدیریت
+        </button>
+        <button class="back-btn" onclick="goToMain()">
+          <i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی
+        </button>
+      </div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="admin-panel hidden" id="admin-panel">
+      <h2><i class="fas fa-crown"></i> پنل مدیریت</h2>
+      <div id="pending-payments">
+        <!-- Payments will be listed here -->
+      </div>
+      <button onclick="adminLogout()" class="back-btn">
+        <i class="fas fa-sign-out-alt"></i> خروج
+      </button>
+    </div>
+    
+    <!-- Step 1: Bot Selection -->
+    <div class="options fade-in" id="options">
+      <div class="card">
+        <h2>انتخاب ربات</h2>
+        <button class="robika" onclick="selectBot('robika')">
+          <span><i class="fas fa-robot"></i> ربات مدیریت گروه روبیکا</span>
+          <span class="price-tag">30,000 تومان</span>
+        </button>
+        <button class="telegram" onclick="selectBot('telegram')">
+          <span><i class="fab fa-telegram"></i> ربات مدیریت گروه تلگرام</span>
+          <span class="price-tag">40,000 تومان</span>
+        </button>
+        <button class="war" onclick="selectBot('war')">
+          <span><i class="fas fa-fighter-jet"></i> ربات جنگ جهانی</span>
+          <span class="price-tag">50,000 تومان</span>
+        </button>
+        <button class="ai" onclick="selectBot('ai')">
+          <span><i class="fas fa-brain"></i> ربات هوش مصنوعی</span>
+          <span class="price-tag">100,000 تومان</span>
+        </button>
+        
+        <div style="margin-top: 20px;">
+          <button onclick="showDirectActivation()" class="termux-btn">
+            <i class="fas fa-terminal"></i> فعال‌سازی مستقیم (ترمکس)
+          </button>
+          <button onclick="showStatusCheck()" class="status-btn">
+            <i class="fas fa-search"></i> پیگیری وضعیت پرداخت
+          </button>
+          <button onclick="showAdminLogin()" class="admin-btn">
+            <i class="fas fa-crown"></i> ورود ادمین
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Step 2: Plan Selection -->
+    <div class="plans hidden" id="plans">
+      <div class="card">
+        <h2>انتخاب پلن</h2>
+        <div id="plan-options">
+          <!-- Plans will be dynamically added here -->
+        </div>
+        <button class="back-btn" onclick="goBack('plans', 'options')">
+          <i class="fas fa-arrow-right"></i> بازگشت
+        </button>
+      </div>
+    </div>
+    
+    <!-- Step 3: Payment -->
+    <div class="payment hidden" id="payment">
+      <div class="card">
+        <h2>پرداخت</h2>
+        <p>لطفا مبلغ <span id="plan-amount" class="success">30,000 تومان</span> را به شماره کارت زیر واریز کنید:</p>
+        
+        <div class="card-info">
+          <i class="far fa-credit-card"></i> 5022-2915-8551-0686
+          <button onclick="copyCardNumber()" style="margin: 10px auto; padding: 8px; font-size: 12px; width: auto;">
+            <i class="far fa-copy"></i> کپی شماره کارت
+          </button>
+        </div>
+        
+        <p>بعد از پرداخت، اطلاعات زیر را تکمیل کنید:</p>
+        <input type="text" id="phone" placeholder="شماره تلفن شما">
+        <input type="text" id="name" placeholder="نام کامل">
+        
+        <div class="file-upload">
+          <p>آپلود فیش واریزی:</p>
+          <input type="file" id="receipt" accept="image/*">
+        </div>
+        
+        <button onclick="submitPayment()" class="robika">
+          <i class="fas fa-check-circle"></i> ثبت اطلاعات و آپلود
+        </button>
+        
+        <p id="result"></p>
+        
+        <button class="back-btn" onclick="goBack('payment', 'plans')">
+          <i class="fas fa-arrow-right"></i> بازگشت
+        </button>
+      </div>
+    </div>
+    
+    <!-- Step 4: Verification Code -->
+    <div class="verification hidden" id="verification">
+      <div class="card">
+        <h2>تأیید نهایی</h2>
+        <p id="verification-message">اطلاعات شما با موفقیت ثبت شد. پس از تأیید پرداخت، ربات برای شما فعال خواهد شد.</p>
+        
+        <div class="success">
+          <p>✅ شماره تلفن: <span id="user-phone">09123456789</span></p>
+          <p>✅ نام: <span id="user-name">نام کاربر</span></p>
+          <p>✅ ربات: <span id="user-bot">ربات انتخابی</span></p>
+          <p>✅ مبلغ: <span id="user-amount">30,000 تومان</span></p>
+        </div>
+        
+        <p>برای پیگیری وضعیت پرداخت با پشتیبانی تماس بگیرید یا از بخش <strong>پیگیری وضعیت</strong> استفاده کنید.</p>
+        
+        <button class="back-btn" onclick="goToMain()">
+          <i class="fas fa-home"></i> بازگشت به صفحه اصلی
+        </button>
+      </div>
+    </div>
+    
+    <!-- Activation Page -->
+    <div class="activation hidden" id="activation">
+      <div class="card">
+        <h2>فعال‌سازی ربات</h2>
+        <div id="activation-info">
+          <!-- Activation info will be here -->
+        </div>
+        <div id="bot-code-container">
+          <h3>کد ربات:</h3>
+          <div class="bot-code" id="bot-code">
+            <!-- Bot code will be here -->
+          </div>
+          <button onclick="copyBotCode()" class="robika">
+            <i class="fas fa-copy"></i> کپی کد ربات
+          </button>
+          
+          <div class="termux-instruction">
+            <h3>📱 راهنمای نصب در ترمکس:</h3>
+            <p>1. نصب پیش‌نیازها:</p>
+            <div class="bot-code">
+pkg update && pkg upgrade
+pkg install python python-pip git
+            </div>
+            
+            <p>2. ایجاد فایل ربات:</p>
+            <div class="bot-code">
+mkdir MyBot && cd MyBot
+nano bot.py
+            </div>
+            
+            <p>3. کد بالا را در فایل کپی کرده و ذخیره کنید (Ctrl+X, Y, Enter)</p>
+            
+            <p>4. نصب کتابخانه‌ها و اجرا:</p>
+            <div class="bot-code">
+pip install rubpy
+python bot.py
+            </div>
+          </div>
+        </div>
+        <button class="back-btn" onclick="goToMain()">
+          <i class="fas fa-home"></i> بازگشت به صفحه اصلی
+        </button>
+      </div>
+    </div>
+    
+    <!-- Support Section -->
+    <div class="support">
+      <div class="card">
+        <h3>پشتیبانی</h3>
+        <p>برای راهنمایی بیشتر با ما در ارتباط باشید:</p>
+        
+        <div class="support-icons">
+          <a href="https://t.me/TahaDangerm" target="_blank" title="تلگرام">
+            <i class="fab fa-telegram"></i>
+          </a>
+          <a href="https://rubika.ir/GodtahaA" target="_blank" title="روبیکا">
+            <i class="fas fa-comment-dots"></i>
+          </a>
+        </div>
+        
+        <p>تلگرام: <b>@TahaDangerm</b></p>
+        <p>روبیکا: <b>@GodtahaA</b></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // داده‌های ذخیره‌سازی محلی
+    let payments = JSON.parse(localStorage.getItem('payments')) || [];
+    let activations = JSON.parse(localStorage.getItem('activations')) || [];
+    let adminPhone = "09134145617"; // شماره ادمین ثابت
+    
+    let selectedBot = "";
+    let selectedPlan = "";
+    let selectedPrice = 0;
+    let userPhone = "";
+    let userName = "";
+    let activationCode = "";
+    
+    // کدهای ربات‌ها
+    const botCodes = {
+      'robika': `# -*- coding: utf-8 -*-
+from rubpy import Client
+import asyncio
+import sqlite3
+import time
+
+class RubikaGroupManager:
+    def __init__(self):
+        self.client = Client()
+        self.db_path = "rubika_bot.db"
+        
+    async def start_bot(self):
+        print("🤖 در حال راه‌اندازی ربات مدیریت گروه روبیکا...")
+        await self.client.start()
+        
+        @self.client.on_message()
+        async def handler(message):
+            if message.raw_text and message.raw_text.startswith("/"):
+                await self.process_command(message)
+        
+        print("✅ ربات با موفقیت راه‌اندازی شد!")
+        await self.client.run_until_disconnected()
+    
+    async def process_command(self, message):
+        text = message.raw_text
+        chat_id = message.chat_id
+        
+        if text == "/start":
+            await self.client.send_message(chat_id, "سلام! من ربات مدیریت گروه روبیکا هستم.")
+        elif text == "/help":
+            await self.client.send_message(chat_id, "🤖 راهنمای دستورات:\\n/start - شروع کار با ربات\\n/help - نمایش راهنما")
+
+# اجرای ربات
+if __name__ == "__main__":
+    bot = RubikaGroupManager()
+    asyncio.run(bot.start_bot())`,
+      
+      'telegram': `from telethon import TelegramClient, events
+import asyncio
+
+api_id = 1234567
+api_hash = 'your_api_hash_here'
+
+class TelegramBot:
+    def __init__(self):
+        self.client = TelegramClient('session', api_id, api_hash)
+        
+    async def start(self):
+        await self.client.start()
+        print("ربات تلگرام فعال شد!")
+        
+        @self.client.on(events.NewMessage(pattern='/start'))
+        async def handler(event):
+            await event.reply("سلام! من ربات مدیریت گروه تلگرام هستم.")
+            
+        await self.client.run_until_disconnected()
+
+bot = TelegramBot()
+asyncio.run(bot.start())`,
+      
+      'war': `import random
+import time
+
+class WarBot:
+    def __init__(self):
+        self.players = {}
+        self.battles = []
+        
+    def add_player(self, user_id, name):
+        self.players[user_id] = {
+            'name': name,
+            'level': 1,
+            'score': 0,
+            'health': 100
+        }
+        return f"玩家 {name} 已加入游戏！"
+        
+    def attack(self, attacker_id, defender_id):
+        if attacker_id not in self.players or defender_id not in self.players:
+            return "玩家不存在！"
+            
+        damage = random.randint(5, 25)
+        self.players[defender_id]['health'] -= damage
+        
+        if self.players[defender_id]['health'] <= 0:
+            self.players[attacker_id]['score'] += 10
+            return f"攻击成功！造成 {damage} 点伤害，玩家 {self.players[defender_id]['name']} 被击败！"
+        
+        return f"攻击成功！造成 {damage} 点伤害"
+
+# ایجاد نمونه ربات
+war_bot = WarBot()
+print("ربات جنگ جهانی فعال شد!")`,
+      
+      'ai': `import requests
+import json
+
+class AIBot:
+    def __init__(self):
+        self.api_key = "YOUR_OPENAI_API_KEY"
+        self.api_url = "https://api.openai.com/v1/chat/completions"
+        
+    def ask_question(self, question):
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        data = {
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": question}],
+            "max_tokens": 150
+        }
+        
+        try:
+            response = requests.post(self.api_url, headers=headers, json=data)
+            return response.json()['choices'][0]['message']['content']
+        except:
+            return "抱歉，我现在无法回答这个问题。"
+
+# ایجاد نمونه ربات
+ai_bot = AIBot()
+print("ربات هوش مصنوعی فعال شد!")`
+    };
+    
+    // Update step indicator
+    function updateStepIndicator(step) {
+      document.querySelectorAll('.step').forEach((el, index) => {
+        if (index + 1 <= step) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+    }
+    
+    // Go to main page
+    function goToMain() {
+      hideAllSections();
+      document.getElementById('options').classList.remove('hidden');
+      updateStepIndicator(1);
+    }
+    
+    // Hide all sections
+    function hideAllSections() {
+      const sections = ['options', 'plans', 'payment', 'verification', 'admin-login', 
+                       'admin-panel', 'status-check', 'activation', 'direct-activation'];
+      sections.forEach(section => {
+        document.getElementById(section).classList.add('hidden');
+      });
+    }
+    
+    // Show direct activation
+    function showDirectActivation() {
+      hideAllSections();
+      document.getElementById('direct-activation').classList.remove('hidden');
+    }
+    
+    // Send activation code
+    function sendActivationCode() {
+      const phone = document.getElementById('direct-phone').value;
+      const resultDiv = document.getElementById('direct-activation-result');
+      
+      if (!phone) {
+        resultDiv.innerHTML = '<p class="error">لطفا شماره تلفن خود را وارد کنید.</p>';
+        return;
+      }
+      
+      if (!isValidPhone(phone)) {
+        resultDiv.innerHTML = '<p class="error">شماره تلفن معتبر نیست.</p>';
+        return;
+      }
+      
+      // Generate random activation code
+      activationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Simulate sending SMS (in real app, this would call an SMS API)
+      resultDiv.innerHTML = `<p class="success">کد فعال‌سازی به شماره ${phone} ارسال شد.</p>
+                            <p class="warning">کد آزمایشی: ${activationCode} (در نسخه واقعی، این کد از طریق پیامک ارسال می‌شود)</p>`;
+      
+      document.getElementById('activation-code-section').classList.remove('hidden');
+      
+      // Save activation attempt
+      activations.push({
+        phone: phone,
+        code: activationCode,
+        timestamp: new Date().toISOString(),
+        verified: false
+      });
+      
+      localStorage.setItem('activations', JSON.stringify(activations));
+    }
+    
+    // Verify activation code
+    function verifyActivationCode() {
+      const code = document.getElementById('activation-code').value;
+      const phone = document.getElementById('direct-phone').value;
+      const resultDiv = document.getElementById('direct-activation-result');
+      
+      if (!code) {
+        resultDiv.innerHTML = '<p class="error">لطفا کد فعال‌سازی را وارد کنید.</p>';
+        return;
+      }
+      
+      if (code === activationCode) {
+        resultDiv.innerHTML = '<p class="success">✅ شماره تلفن با موفقیت تأیید شد.</p>';
+        
+        // Show bot selection for activation
+        setTimeout(() => {
+          hideAllSections();
+          document.getElementById('options').classList.remove('hidden');
+          document.getElementById('direct-phone').value = phone;
+        }, 2000);
+      } else {
+        resultDiv.innerHTML = '<p class="error">❌ کد فعال‌سازی نادرست است.</p>';
+      }
+    }
+    
+    // Show status check
+    function showStatusCheck() {
+      hideAllSections();
+      document.getElementById('status-check').classList.remove('hidden');
+    }
+    
+    // Check status
+    function checkStatus() {
+      const phone = document.getElementById('status-phone').value;
+      const resultDiv = document.getElementById('status-result');
+      
+      if (!phone) {
+        resultDiv.innerHTML = '<p class="error">لطفا شماره تلفن خود را وارد کنید.</p>';
+        return;
+      }
+      
+      const userPayments = payments.filter(p => p.phone === phone);
+      
+      if (userPayments.length === 0) {
+        resultDiv.innerHTML = '<p class="error">هیچ پرداختی با این شماره ثبت نشده است.</p>';
+        return;
+      }
+      
+      // نمایش آخرین پرداخت کاربر
+      const lastPayment = userPayments[userPayments.length - 1];
+      
+      let statusClass = 'status-pending';
+      let statusText = 'در انتظار تایید';
+      
+      if (lastPayment.status === 'approved') {
+        statusClass = 'status-approved';
+        statusText = 'تایید شده';
+      } else if (lastPayment.status === 'rejected') {
+        statusClass = 'status-rejected';
+        statusText = 'رد شده';
+      }
+      
+      resultDiv.innerHTML = `
+        <div class="payment-item">
+          <p><strong>نام:</strong> ${lastPayment.name}</p>
+          <p><strong>ربات:</strong> ${lastPayment.bot}</p>
+          <p><strong>پلن:</strong> ${lastPayment.plan}</p>
+          <p><strong>مبلغ:</strong> ${lastPayment.amount.toLocaleString()} تومان</p>
+          <p><strong>زمان:</strong> ${new Date(lastPayment.timestamp).toLocaleString('fa-IR')}</p>
+          <p><strong>وضعیت:</strong> <span class="status-badge ${statusClass}">${statusText}</span></p>
+          ${lastPayment.status === 'approved' ? 
+            `<button onclick="activateBot('${lastPayment.botType}', '${phone}')" class="robika">
+               <i class="fas fa-play"></i> فعال‌سازی ربات
+             </button>` : ''}
+        </div>
+      `;
+    }
+    
+    // Activate bot
+    function activateBot(botType, phone) {
+      const userPayments = payments.filter(p => p.phone === phone && p.status === 'approved');
+      
+      if (userPayments.length === 0) {
+        alert('پرداخت تایید شده‌ای برای این شماره یافت نشد!');
+        return;
+      }
+      
+      const payment = userPayments[userPayments.length - 1];
+      
+      hideAllSections();
+      document.getElementById('activation').classList.remove('hidden');
+      
+      document.getElementById('activation-info').innerHTML = `
+        <div class="success">
+          <p>✅ ربات: ${payment.bot}</p>
+          <p>✅ پلن: ${payment.plan}</p>
+          <p>✅ مبلغ: ${payment.amount.toLocaleString()} تومان</p>
+          <p>✅ وضعیت: فعال شده</p>
+        </div>
+      `;
+      
+      document.getElementById('bot-code').textContent = botCodes[botType];
+    }
+    
+    // Copy bot code
+    function copyBotCode() {
+      const code = document.getElementById('bot-code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert('کد ربات با موفقیت کپی شد!');
+      });
+    }
+    
+    // Show admin login
+    function showAdminLogin() {
+      hideAllSections();
+      document.getElementById('admin-login').classList.remove('hidden');
+    }
+    
+    // Admin login
+    function adminLogin() {
+      const phone = document.getElementById('admin-phone').value;
+      
+      if (phone === adminPhone) {
+        hideAllSections();
+        document.getElementById('admin-panel').classList.remove('hidden');
+        loadPendingPayments();
+      } else {
+        alert("شماره تلفن ادمین معتبر نیست!");
+      }
+    }
+    
+    // Admin logout
+    function adminLogout() {
+      hideAllSections();
+      document.getElementById('options').classList.remove('hidden');
+    }
+    
+    // Load pending payments for admin
+    function loadPendingPayments() {
+      const pendingPayments = payments.filter(p => p.status === 'pending');
+      const container = document.getElementById('pending-payments');
+      
+      if (pendingPayments.length === 0) {
+        container.innerHTML = '<p>هیچ پرداخت در انتظار تایید وجود ندارد.</p>';
+        return;
+      }
+      
+      container.innerHTML = '<h3>پرداخت‌های در انتظار تایید:</h3>';
+      
+      pendingPayments.forEach((payment, index) => {
+        const paymentDiv = document.createElement('div');
+        paymentDiv.className = 'payment-item';
+        paymentDiv.innerHTML = `
+          <p><strong>نام:</strong> ${payment.name}</p>
+          <p><strong>تلفن:</strong> ${payment.phone}</p>
+          <p><strong>ربات:</strong> ${payment.bot}</p>
+          <p><strong>پلن:</strong> ${payment.plan}</p>
+          <p><strong>مبلغ:</strong> ${payment.amount.toLocaleString()} تومان</p>
+          <p><strong>زمان:</strong> ${new Date(payment.timestamp).toLocaleString('fa-IR')}</p>
+          <button onclick="approvePayment(${index})" class="admin-btn" style="width: auto; margin: 5px;">
+            <i class="fas fa-check"></i> تایید
+          </button>
+          <button onclick="rejectPayment(${index})" class="back-btn" style="width: auto; margin: 5px;">
+            <i class="fas fa-times"></i> رد
+          </button>
+        `;
+        container.appendChild(paymentDiv);
+      });
+    }
+    
+    // Approve payment
+    function approvePayment(index) {
+      payments[index].status = 'approved';
+      localStorage.setItem('payments', JSON.stringify(payments));
+      alert('پرداخت تایید شد!');
+      loadPendingPayments();
+    }
+    
+    // Reject payment
+    function rejectPayment(index) {
+      payments[index].status = 'rejected';
+      localStorage.setItem('payments', JSON.stringify(payments));
+      alert('پرداخت رد شد!');
+      loadPendingPayments();
+    }
+    
+    // Select bot type
+    function selectBot(bot) {
+      selectedBot = bot;
+      
+      // Set price based on bot selection
+      if (bot === 'robika') {
+        selectedPrice = 30000;
+      } else if (bot === 'telegram') {
+        selectedPrice = 40000;
+      } else if (bot === 'war') {
+        selectedPrice = 50000;
+      } else if (bot === 'ai') {
+        selectedPrice = 100000;
+      }
+      
+      hideAllSections();
+      document.getElementById('plans').classList.remove('hidden');
+      
+      // نمایش پلن‌های مناسب برای هر ربات
+      const planOptions = document.getElementById('plan-options');
+      planOptions.innerHTML = '';
+      
+      if (bot === 'robika' || bot === 'telegram') {
+        // برای روبیکا و تلگرام پلن ماهانه
+        planOptions.innerHTML = `
+          <button class="plan"
